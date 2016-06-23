@@ -110,7 +110,9 @@ if (TARGET === 'build' || TARGET === 'stats') {
       ]
     },
     plugins: [
-      new CleanPlugin([PATHS.build]),
+      new CleanPlugin([PATHS.build], {
+        verbose: false
+      }),
       new ExtractTextPlugin('[name].[chunkhash].css'),
       new webpack.optimize.CommonsChunkPlugin({
         names: ['vendor', 'manifest']
