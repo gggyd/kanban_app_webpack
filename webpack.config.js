@@ -2,6 +2,7 @@ const path = require('path');
 const merge = require('webpack-merge');
 const webpack = require('webpack');
 const NpmInstallPlugin = require('npm-install-webpack-plugin');
+const pkg = require('./package.json');
 
 const TARGET = process.env.npm_lifecycle_event;
 process.env.BABEL_ENV = TARGET;
@@ -13,14 +14,14 @@ const PATHS = {
 
 const common = {
   entry: {
-    app: PATHS.app
+    bundle: PATHS.app
   },
   resolve: {
     extensions: ['', '.js', '.jsx']
   },
   output: {
     path: PATHS.build,
-    filename: 'bundle.js'
+    filename: '[name].js',
   },
   module: {
     loaders: [
@@ -74,7 +75,15 @@ if (TARGET === 'start' || !TARGET) {
 
 if (TARGET === 'build') {
   module.exports = merge(common, {
+    entry: {
+      vendor: Object.keys(pkg.dependencies).filter(function(v) {
+        return v !== 'alt-utils';
+      })
+    },
     plugins: [
+      new webpack.optimize.CommonsChunkPlugin({
+        names: ['vendor', 'manifest']
+      }),
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': '"production"'
       }),
