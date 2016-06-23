@@ -2,6 +2,8 @@ const path = require('path');
 const merge = require('webpack-merge');
 const webpack = require('webpack');
 const NpmInstallPlugin = require('npm-install-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CleanPlugin = require('clean-webpack-plugin');
 const pkg = require('./package.json');
 
 const TARGET = process.env.npm_lifecycle_event;
@@ -21,7 +23,7 @@ const common = {
   },
   output: {
     path: PATHS.build,
-    filename: '[name].js',
+    filename: '[name].js'
   },
   module: {
     loaders: [
@@ -40,14 +42,22 @@ const common = {
         include: PATHS.app
       }
     ]
-  }
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: 'node_modules/html-webpack-template/index.ejs',
+      title: 'Kanban app',
+      appMountId: 'app',
+      inject: false
+    })
+  ]
 };
 
 if (TARGET === 'start' || !TARGET) {
   module.exports = merge(common, {
     devtool: 'eval-source-map',
     devServer: {
-      contentBase: PATHS.build,
+      // contentBase: PATHS.build,
 
       // Enable history API fallback so HTML5 History API based
       // routing works. This is a good default that will come
@@ -80,7 +90,13 @@ if (TARGET === 'build') {
         return v !== 'alt-utils';
       })
     },
+    output: {
+      path: PATHS.build,
+      filename: '[name].[chunkhash].js',
+      chunkFilename: '[chunkhash].js'
+    },
     plugins: [
+      new CleanPlugin([PATHS.build]),
       new webpack.optimize.CommonsChunkPlugin({
         names: ['vendor', 'manifest']
       }),
