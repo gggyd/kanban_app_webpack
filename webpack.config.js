@@ -29,7 +29,11 @@ const common = {
       },
       {
         test: /\.jsx?$/,
-        loaders: ['babel?cacheDirectory'],
+        loader: 'babel',
+        query: {
+          cacheDirectory: true,
+          presets: ['react', 'es2015', 'survivejs-kanban']
+        },
         include: PATHS.app
       }
     ]
