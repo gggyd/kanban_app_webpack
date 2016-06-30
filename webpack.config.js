@@ -18,7 +18,7 @@ const PATHS = {
 
 const common = {
   entry: {
-    bundle: PATHS.app,
+    bundle: PATHS.app + '/indexRedux',
     style: PATHS.style
   },
   resolve: {
