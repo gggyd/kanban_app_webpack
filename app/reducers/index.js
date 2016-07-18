@@ -1,8 +1,10 @@
 import { combineReducers } from 'redux';
 import counter from './counter';
+import images from './images';
 
 const rootRducer = combineReducers({
-  counter
+  counter,
+  images
 });
 
 export default rootRducer;
